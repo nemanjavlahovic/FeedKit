@@ -38,58 +38,47 @@ import Foundation
 /// length="12216320" type="audio/mpeg" />
 public class RSSFeedItemEnclosure {
     
-    /// The element's attributes.
-    public class Attributes {
-        
-        /// Where the enclosure is located.
-        /// 
-        /// Example: http://www.scripting.com/mp3s/weatherReportSuite.mp3
-        public var url: String?
-        
-        /// How big the media object is in bytes.
-        /// 
-        /// Example: 12216320
-        public var length: Int64?
-        
-        /// Standard MIME type.
-        /// 
-        /// Example: audio/mpeg
-        public var type: String?
-        
-    }
+    /// Where the enclosure is located.
+    public var url: String?
     
-    /// The element's attributes.
-    public var attributes: Attributes?
+    /// How big the media object is in bytes.
+    public var length: Int64?
+    
+    /// Standard MIME type.
+    public var type: String?
     
     public init() { }
     
-}
-
-// MARK: - Initializers
-
-extension RSSFeedItemEnclosure {
-    
-    convenience init(attributes attributeDict: [String : String]) {
-        self.init()
-        self.attributes = RSSFeedItemEnclosure.Attributes(attributes: attributeDict)
-    }
-    
-}
-
-extension RSSFeedItemEnclosure.Attributes {
-    
-    convenience init?(attributes attributeDict: [String : String]) {
-        
-        if attributeDict.isEmpty {
+    public init?(dictionary: [String: Any]) {
+        if let url = dictionary["url"] as? String {
+            self.url = url
+        } else if let enclosure = dictionary["enclosure"] as? String {
+            self.url = enclosure
+        } else {
             return nil
         }
         
-        self.init()
+        if let length = dictionary["length"] as? Int64 {
+            self.length = length
+        }
         
-        self.url     = attributeDict["url"]
-        self.type    = attributeDict["type"]
-        self.length  = Int64(attributeDict["length"] ?? "")
-        
+        if let type = dictionary["type"] as? String {
+            self.type = type
+        }
+    }
+    
+    public var dictionary: [String: Any] {
+        var dictionary = [String: Any]()
+        if let url = url {
+            dictionary["url"] = url
+        }
+        if let length = length {
+            dictionary["length"] = length
+        }
+        if let type = type {
+            dictionary["type"] = type
+        }
+        return dictionary
     }
     
 }
@@ -99,18 +88,10 @@ extension RSSFeedItemEnclosure.Attributes {
 extension RSSFeedItemEnclosure: Equatable {
     
     public static func ==(lhs: RSSFeedItemEnclosure, rhs: RSSFeedItemEnclosure) -> Bool {
-        return lhs.attributes == rhs.attributes
-    }
-    
-}
-
-extension RSSFeedItemEnclosure.Attributes: Equatable {
-    
-    public static func ==(lhs: RSSFeedItemEnclosure.Attributes, rhs: RSSFeedItemEnclosure.Attributes) -> Bool {
         return
             lhs.url == rhs.url &&
-            lhs.type == rhs.type &&
-            lhs.length == rhs.length
+            lhs.length == rhs.length &&
+            lhs.type == rhs.type
     }
     
 }

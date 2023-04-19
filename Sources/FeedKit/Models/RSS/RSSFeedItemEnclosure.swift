@@ -50,21 +50,19 @@ public class RSSFeedItemEnclosure {
     public init() { }
     
     public init?(attributes: [String: String]) {
-        if let url = dictionary["url"] as? String {
+        if let url = attributes["url"] {
             self.url = url
-        } else if let enclosure = dictionary["enclosure"] as? String {
+        } else if let enclosure = attributes["enclosure"] {
             self.url = enclosure
         } else {
             return nil
         }
         
-        if let length = dictionary["length"] as? Int64 {
+        if let lengthStr = attributes["length"], let length = Int64(lengthStr) {
             self.length = length
         }
         
-        if let type = dictionary["type"] as? String {
-            self.type = type
-        }
+        self.type = attributes["type"]
     }
     
     public var dictionary: [String: Any] {

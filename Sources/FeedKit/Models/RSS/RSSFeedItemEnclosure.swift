@@ -49,7 +49,7 @@ public class RSSFeedItemEnclosure {
     
     public init() { }
     
-    public init?(dictionary: [String: Any]) {
+    public init?(attributes: [String: String]) {
         if let url = dictionary["url"] as? String {
             self.url = url
         } else if let enclosure = dictionary["enclosure"] as? String {
